@@ -1,0 +1,27 @@
+---
+description: Create multiple Active Directory Users
+enabled: true
+entry_point: workflows/add_multiple_users.yaml
+name: add_multiple_users
+pack: ldap
+parameters:
+  users_email:
+    required: true
+    items:
+      type: string
+    minItems: 1
+    type: array
+  expires_in:
+    required: false
+    type: integer
+    default: 1
+  expires_in_dimension:
+    required: false
+    enum:
+    - weeks
+    - days
+    - hours
+    - minutes
+    - seconds
+    default: days
+runner_type: orquesta

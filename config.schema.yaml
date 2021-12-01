@@ -1,0 +1,42 @@
+---
+  ldap_address:
+    description: "Active Directory LDAP Server (IP or FQDN)"
+    type: "string"
+    required: true
+  ldap_domain:
+    description: "Active Directory Domain Name"
+    type: "string"
+    required: true
+  ldap_admin_username:
+    description: "LDAP admin user"
+    type: "string"
+    required: true
+  ldap_admin_password:
+    description: "LDAP admin user password"
+    type: "string"
+    secret: true
+    required: true
+  ldap_base_dn:
+    description: "LDAP Base DN / OU"
+    type: "string"
+    required: true
+  ldap_group_dn:
+    description: "LDAP User Group"
+    type: "string"
+    required: true
+  mail_sender_address:
+    description: "Sender mail address"
+    type: "string"
+    required: true
+  mail_text:
+    description: "Mail content text as jinja syntax with username and password variable"
+    type: "string"
+    required: true
+  mail_subject:
+    description: "Mail Subject"
+    type: "string"
+    required: true
+  mail_server:
+    description: "FQDN or IP of the SMTP mail server"
+    type: "string"
+    required: true

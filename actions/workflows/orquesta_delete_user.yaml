@@ -1,0 +1,30 @@
+version: "1.0"
+description: This Workflow deletes a LDAP user.
+input:
+    - username
+    - only_expired_users
+tasks:
+    get_user:
+        action: ldap.get_user
+        input:
+            username: '{{ ctx("username") }}'
+            only_expired_users: '{{ ctx("only_expired_users") }}'
+        next:
+            - when: '{{ succeeded() }}'
+              publish: user_list='{{ result().result }}'
+              do: repeat_delete_user
+            - when: '{{ failed() }}'
+              do: notify_on_error
+    repeat_delete_user:
+        with: '{{ ctx("user_list") }}'
+        action: ldap.delete_user user_obj='{{ item() }}'
+        next:
+            - when: '{{ failed() }}'
+              do: notify_on_error
+    # Default exception handler
+    notify_on_error:
+        action: core.noop
+        next:
+            - do: fail
+output:
+    - out_user_list: '{{ ctx("user_list") }}'

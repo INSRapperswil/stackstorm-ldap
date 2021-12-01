@@ -1,0 +1,29 @@
+---
+name: create_user
+runner_type: python-script
+description: Create a New Microsoft AD LDAP User
+enabled: true
+entry_point: create_user.py
+parameters:
+  email:
+    type: string
+    description: "E-Mail of the new user"
+    required: true
+  expiration:
+    type: integer
+    description: "Expiration value"
+    required: false
+  time_dimension:
+    enum:
+      - weeks
+      - days
+      - hours
+      - minutes
+      - seconds
+    default: days
+    description: "Dimension of the expiration value"
+    required: false
+  username:
+    type: string
+    description: "Manual username, max. 20 characters"
+    required: false

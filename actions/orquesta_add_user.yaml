@@ -1,0 +1,40 @@
+---
+description: Create an Active Directory User
+enabled: true
+entry_point: workflows/orquesta_add_user.yaml
+name: orquesta_add_user
+pack: ldap
+parameters:
+  skip_notify:
+    default:
+      - "check_password"
+      - "generate_new_password"
+      - "create_new_user"
+      - "set_user_password"
+      - "enable_user"
+      - "set_user_group"
+      - "send_mail"
+      - "delete_user"
+  mail:
+    required: true
+    type: string
+  password:
+    required: false
+    type: string
+  expires_in:
+    required: false
+    type: integer
+    default: 1
+  expires_in_dimension:
+    required: false
+    enum:
+      - weeks
+      - days
+      - hours
+      - minutes
+      - seconds
+    default: days
+  username:
+    required: false
+    type: string
+runner_type: orquesta

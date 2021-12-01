@@ -1,0 +1,21 @@
+---
+name: "notify_deletion"
+pack: ldap
+description: "Notification if user deletion workflow is executed"
+enabled: true
+
+trigger:
+    ref: core.st2.generic.actiontrigger
+    type: core.st2.generic.actiontrigger
+    parameters:
+
+criteria:
+    trigger.action_name:
+        pattern: ldap.orquesta_delete_user
+        type: eq
+
+action:
+    ref: chatops.post_message
+    parameters:
+        message: 'Cron - {% if trigger.result.out_user_list|length > 0 %}Removed Users: {% for user in trigger.result.out_user_list %}{{ user.sAMAccountName }} - {% endfor %}{% else %}No user removed{% endif %}'
+        channel: chatops

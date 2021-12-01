@@ -1,0 +1,11 @@
+---
+name: disable_user
+runner_type: python-script
+description: "disable Microsoft AD LDAP User"
+enabled: true
+entry_point: disable_user.py
+parameters:
+  user_obj:
+    type: object
+    description: "User Object in JSON format"
+    required: true

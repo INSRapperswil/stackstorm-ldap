@@ -1,0 +1,22 @@
+---
+name: remove_expired_users_daily
+pack: "ldap"
+description: "This rule removes all expired users daily"
+enabled: true
+
+trigger:
+    type: "core.st2.CronTimer"
+    parameters:
+        timezone: "UTC"
+        day_of_week: mon-sun
+        hour: 0
+        minute: 0
+        second: 0
+
+criteria: {}
+
+action:
+    parameters:
+        username: "*"
+        only_expired_users: true
+    ref: ldap.orquesta_delete_user

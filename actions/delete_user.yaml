@@ -1,0 +1,11 @@
+---
+name: delete_user
+runner_type: python-script
+description: Delete Microsoft AD LDAP User
+enabled: true
+entry_point: delete_user.py
+parameters:
+  user_obj:
+    type: object
+    description: "User Object in JSON format"
+    required: true

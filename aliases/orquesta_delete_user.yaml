@@ -1,0 +1,27 @@
+---
+name: "delete_user_workflow"
+action_ref: "ldap.orquesta_delete_user"
+description: "Workflow - Delete a LDAP user"
+formats:
+  - "(delete|remove|rm) user {{username}}"
+ack:
+  format: "Acknowledged!"
+  append_url: false
+result:
+  format: |
+    Remove user `{{ execution.parameters.username }}`: {~}
+    {% for task in execution.result.tasks %}
+      {% if task.result.stderr and task.result.stderr != '' %}
+      Task: *{{ task.name }}*
+      Status: {{ task.state }}
+      Message: {{ task.result.stderr }}
+      {% endif %}
+    {% endfor %}
+  extra:
+    slack:
+      color: "{% if execution.result.extra.state == 'SUCCESS' %}good{% else %}danger{% endif %}"
+      fields:
+        - title: "{% if execution.result.out_user_list|length > 0 %}Removed Users{% else %}No user removed{% endif %}"
+          value: "{% for user in execution.result.out_user_list %}{{ user.name }} - {{ user.sAMAccountName }}\n{% endfor %}"
+          short: false
+      footer: "{{ execution.id }} - {{ execution.status }} - {{ execution.elapsed_seconds | to_human_time_from_seconds }}"

@@ -1,0 +1,11 @@
+---
+ref: ldap
+name: LDAP
+description: Create and Delete Microsoft Active Directory Users with LDAP
+keywords:
+  - LDAP
+  - AD
+  - CRUD
+version: 0.0.3
+author: Yannick Zwicker
+email: ins-support@ost.ch

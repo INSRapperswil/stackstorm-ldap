@@ -1,0 +1,99 @@
+version: "1.0"
+description: This Workflow creates and enables a LDAP user.
+input:
+  - mail
+  - password
+  - expires_in
+  - expires_in_dimension
+  - username
+tasks:
+  check_password:
+    action: core.noop
+    next:
+    # refactor: should this get checked for succeeded()?
+      - when: '{{ ctx("password") == none }}'
+        do: generate_new_password
+      - when: '{{ ctx("password") != none }}'
+        do: create_new_user
+  generate_new_password:
+    action: ldap.generate_password
+    input:
+      nbytes: 16
+    next:
+      - when: '{{ succeeded() }}'
+        publish: password='{{ result().result }}'
+        do: create_new_user
+      - when: '{{ failed() }}'
+        do: notify_on_error
+  create_new_user:
+    action: ldap.create_user
+    input:
+      email: '{{ ctx("mail") }}'
+      expiration: '{{ ctx("expires_in") }}'
+      time_dimension: '{{ ctx("expires_in_dimension") }}'
+      username: '{{ ctx("username") }}'
+    next:
+      - when: '{{ succeeded() }}'
+        publish:
+          - new_user: '{{ result().result }}'
+          - username: '{{ result().result.username }}'
+          - expiration_date: '{{ result().result.accountExpires }}'
+        do: set_user_password
+      - when: '{{ failed() }}'
+        do: notify_on_error
+  set_user_password:
+    action: ldap.set_user_password
+    input:
+      user_obj: '{{ ctx("new_user") }}'
+      password: '{{ ctx("password") }}'
+    next:
+      - when: '{{ succeeded() }}'
+        do: enable_user
+      - when: '{{ failed() }}'
+        do: delete_user
+  enable_user:
+    action: ldap.enable_user
+    input:
+      user_obj: '{{ ctx("new_user") }}'
+    next:
+      - when: '{{ succeeded() }}'
+        do: set_user_group
+      - when: '{{ failed() }}'
+        do: delete_user
+  set_user_group:
+    action: ldap.set_user_group
+    input:
+      user_obj: '{{ ctx("new_user") }}'
+    next:
+      - when: '{{ succeeded() and ctx("mail") != none }}'
+        do: send_mail
+      - when: '{{ failed() }}'
+        do: delete_user
+  send_mail:
+    action: ldap.send_mail
+    input:
+      username: '{{ ctx("username") }}'
+      password: '{{ ctx("password") }}'
+      recipient_address: '{{ ctx("mail") }}'
+    next:
+      - when: '{{ failed() }}'
+        do: delete_user
+  delete_user:
+    action: ldap.delete_user
+    input:
+      user_obj: '{{ ctx("new_user") }}'
+    next:
+      - do: notify_on_error
+  # Default exception handler
+  notify_on_error:
+    action: core.noop
+    next:
+      - publish:
+          - username: "FAILED"
+          - password: "FAILED"
+        do: fail
+output:
+  - out_username: '{{ ctx("new_user").username }}'
+  - out_password: '{{ ctx("password") }}'
+  - out_mail: '{{ ctx("mail") }}'
+  - out_expires_on: '{{ ctx("expiration_date") }}'

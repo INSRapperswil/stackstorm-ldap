@@ -1,0 +1,20 @@
+---
+name: send_mail
+runner_type: python-script
+description: "Send Mail"
+enabled: true
+entry_point: send_mail.py
+parameters:
+  username:
+    type: string
+    description: "Active Directory Username"
+    required: true
+  password:
+    type: string
+    description: "Password of the user"
+    required: true
+    secret: true
+  recipient_address:
+    type: string
+    description: "E-Mail of the user, used as recipient address"
+    required: true

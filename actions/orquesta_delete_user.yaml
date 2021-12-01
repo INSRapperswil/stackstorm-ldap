@@ -1,0 +1,20 @@
+---
+description: Delete an Active Directory User
+enabled: true
+entry_point: workflows/orquesta_delete_user.yaml
+name: orquesta_delete_user
+pack: ldap
+parameters:
+  skip_notify:
+    default:
+      - "repeat_delete_user"
+      - "get_user"
+      - "notify_on_error"
+  username:
+    required: true
+    type: string
+  only_expired_users:
+    type: boolean
+    default: false
+    required: false
+runner_type: orquesta

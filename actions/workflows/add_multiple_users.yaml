@@ -1,0 +1,21 @@
+version: "1.0"
+description: This Workflow schedules multiple user creations.
+input:
+    - users_email
+    - expires_in
+    - expires_in_dimension
+vars:
+    - result: {}
+tasks:
+    # [128, 25]
+    add_users:
+        with: '{{ ctx("users_email") }}'
+        action: ldap.orquesta_add_user
+        input:
+            mail: '{{ item() }}'
+            expires_in: '{{ ctx("expires_in") }}'
+            expires_in_dimension: '{{ ctx("expires_in_dimension") }}'
+        next:
+            - publish: result='{{ result() }}'
+output:
+    - out_result: '{{ ctx("result") }}'

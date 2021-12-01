@@ -1,0 +1,16 @@
+---
+  ldap_address: "ad.example.com"
+  ldap_domain: "example.com"
+  ldap_admin_username: "admin"
+  ldap_admin_password: "my-super-secret-password"
+  ldap_base_dn: "OU=Users,OU=Students,OU=Edu,DC=example,DC=com"
+  ldap_group_dn: "CN=STUDENTS,OU=Resource Groups,OU=Groups,OU=Students,OU=Edu,DC=example,DC=com"
+  mail_sender_address: "admin@example.com"
+  mail_text: |
+    This is a multiline example text.
+
+    With best wishes
+
+    A test person
+  mail_subject: "Why is a banana yellow?"
+  mail_server: "smtp.example.com"

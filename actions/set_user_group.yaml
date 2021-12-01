@@ -1,0 +1,11 @@
+---
+name: set_user_group
+runner_type: python-script
+description: "Add a user to a group"
+enabled: true
+entry_point: set_user_group.py
+parameters:
+  user_obj:
+    type: object
+    description: "User Object in JSON format"
+    required: true
