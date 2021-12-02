@@ -16,13 +16,10 @@ class SendMail(BaseAction):
         msg.set_content(mail_text_rendered)
 
         try:
-            server_instance = smtplib.SMTP(self.config.get('mail_server'))
-            server_instance.send_message(msg)
+            with smtplib.SMTP(self.config.get('mail_server')) as server_instance:
+                server_instance.send_message(msg)
         except Exception as e:
             self.logger.error(e)
             return False, ""
-        finally:
-            if server_instance:
-                server_instance.quit()
 
         return True, "Mail transmitted successfully!"
